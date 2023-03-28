@@ -16,7 +16,7 @@ class Review(models.Model):
         related_name='%(app_label)s_%(class)s',
     )
     text = models.TextField('Отзыв')
-    score = models.IntegerField('Оценка', max_length=2)
+    score = models.IntegerField('Оценка')
     pub_date = models.DateTimeField('Дата публикации', auto_now_add=True)
 
     class Meta:
