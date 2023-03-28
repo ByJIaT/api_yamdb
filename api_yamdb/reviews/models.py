@@ -39,3 +39,7 @@ class Review(models.Model):
 
     def __str__(self):
         return self.text[:TEXT_LENGTH]
+
+
+class Title(models.Model):
+    ...
