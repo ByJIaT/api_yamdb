@@ -1,7 +1,7 @@
 from django.urls import path, include
 from rest_framework.routers import SimpleRouter
 
-from api_yamdb.api.views import ReviewViewSet
+from .views import ReviewViewSet
 
 router_v1 = SimpleRouter()
 router_v1.register(

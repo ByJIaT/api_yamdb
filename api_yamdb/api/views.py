@@ -2,9 +2,9 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.viewsets import ModelViewSet
 
-from api_yamdb.api.permissions import IsAuthorOrReadOnly
-from api_yamdb.api.serializer import ReviewSerializer
-from api_yamdb.reviews.models import Title
+from .permissions import IsAuthorOrReadOnly
+from .serializer import ReviewSerializer
+from reviews.models import Title
 
 
 class ReviewViewSet(ModelViewSet):
