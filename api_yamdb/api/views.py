@@ -1,9 +1,11 @@
+from django.db.models.aggregates import Avg
 from rest_framework.generics import get_object_or_404
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.viewsets import ModelViewSet
 
+from .filters import TitleFilter
 from .permissions import IsAuthorOrReadOnly
-from .serializer import ReviewSerializer
+from .serializer import ReviewSerializer, TitleEditSerializer, TitleReadSerializer
 from reviews.models import Title
 
 
@@ -28,3 +30,14 @@ class ReviewViewSet(ModelViewSet):
 
     def perform_destroy(self, instance):
         instance.delete(title_id=self.get_title(), author=self.request.user)
+
+
+class TitleViewSet(ModelViewSet):
+    queryset = Title.objects.all().annotate(rating=Avg('reviews_reviews__score'))
+    # место для permission_classes
+    filterset_class = TitleFilter
+
+    def get_serializer_class(self):
+        if self.request.method in ['POST', 'PATCH']:
+            return TitleEditSerializer
+        return TitleReadSerializer
