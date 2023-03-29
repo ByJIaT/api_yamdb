@@ -6,7 +6,6 @@ from api_yamdb.settings import TEXT_LENGTH
 from reviews.validators import validate_actuality_year
 
 
-
 class Review(models.Model):
     title_id = models.ForeignKey(
         'Title',
