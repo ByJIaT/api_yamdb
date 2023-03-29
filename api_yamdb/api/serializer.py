@@ -13,6 +13,7 @@ class ReviewSerializer(serializers.ModelSerializer):
             'pub_date',
         )
 
+
 class CategorySerializer(serializers.ModelSerializer):
 
     class Meta:

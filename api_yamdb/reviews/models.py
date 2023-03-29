@@ -60,14 +60,14 @@ class Category(models.Model):
         verbose_name_plural = 'Категории'
 
     def __str__(self):
-        return self.name
+        return self.name[:TEXT_LENGTH]
 
 
 class Genre(models.Model):
     name = models.CharField(
         max_length=256,
         unique=True,
-        verbose_name='Низвание жанра',
+        verbose_name='Название жанра',
     )
     slug = models.SlugField(
         max_length=50,
@@ -80,7 +80,7 @@ class Genre(models.Model):
         verbose_name_plural = 'Жанры'
 
     def __str__(self):
-        return self.name
+        return self.name[:TEXT_LENGTH]
 
 
 class Title(models.Model):
@@ -116,7 +116,7 @@ class Title(models.Model):
         verbose_name_plural = 'Произведения'
 
     def __str__(self):
-        return self.name
+        return self.name[:TEXT_LENGTH]
 
 
 class GenreTitle(models.Model):

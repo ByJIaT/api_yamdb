@@ -1,4 +1,5 @@
 from django.db.models.aggregates import Avg
+from django_filters import rest_framework as filters
 from rest_framework.generics import get_object_or_404
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.viewsets import ModelViewSet
@@ -33,8 +34,11 @@ class ReviewViewSet(ModelViewSet):
 
 
 class TitleViewSet(ModelViewSet):
-    queryset = Title.objects.all().annotate(rating=Avg('reviews_reviews__score'))
+    queryset = Title.objects.all().annotate(
+        rating=Avg('reviews_review__score')
+    )
     # место для permission_classes
+    filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = TitleFilter
 
     def get_serializer_class(self):
