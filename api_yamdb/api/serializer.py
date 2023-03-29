@@ -1,8 +1,8 @@
 from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
 
-from api_yamdb.api.validators import RangeValueValidator
-from api_yamdb.reviews.models import Review
+from api.validators import RangeValueValidator
+from reviews.models import Review
 
 
 class ReviewSerializer(serializers.ModelSerializer):

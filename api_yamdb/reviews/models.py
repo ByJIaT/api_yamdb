@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.db import models
 
-from api_yamdb.api_yamdb.settings import TEXT_LENGTH
+from api_yamdb.settings import TEXT_LENGTH
 
 
 class Review(models.Model):
