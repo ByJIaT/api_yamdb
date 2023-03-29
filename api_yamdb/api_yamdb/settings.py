@@ -24,6 +24,7 @@ INSTALLED_APPS = [
 
     'rest_framework',
     'django_filters',
+    'users',
     'reviews',
     'api',
 ]
@@ -106,3 +107,8 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = ((BASE_DIR / 'static/'),)
+
+AUTH_USER_MODEL = 'users.User'
+
+
+TEXT_LENGTH = 15

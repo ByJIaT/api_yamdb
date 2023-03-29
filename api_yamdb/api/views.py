@@ -4,9 +4,9 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.viewsets import ModelViewSet
 
-from .filters import TitleFilter
-from .permissions import IsAuthorOrReadOnly
-from .serializer import ReviewSerializer, TitleEditSerializer, TitleReadSerializer
+from api.filters import TitleFilter
+from api.permissions import IsAuthorOrReadOnly
+from api.serializer import ReviewSerializer, TitleEditSerializer, TitleReadSerializer
 from reviews.models import Title
 
 

@@ -1,5 +1,7 @@
 from rest_framework import serializers
+from rest_framework.validators import UniqueTogetherValidator
 
+from api.validators import RangeValueValidator
 from reviews.models import Category, Genre, Review, Title
 
 
@@ -12,6 +14,16 @@ class ReviewSerializer(serializers.ModelSerializer):
             'author',
             'pub_date',
         )
+        validators = [
+            UniqueTogetherValidator(
+                queryset=Review.objects.all(),
+                fields=['title_id', 'author']
+            ),
+            RangeValueValidator(
+                field='score',
+            ),
+
+        ]
 
 
 class CategorySerializer(serializers.ModelSerializer):
