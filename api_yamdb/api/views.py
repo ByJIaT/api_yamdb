@@ -2,6 +2,7 @@ from django.db.models.aggregates import Avg
 from django_filters import rest_framework as filters
 from http import HTTPStatus
 
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.generics import get_object_or_404
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.viewsets import ModelViewSet
@@ -12,6 +13,7 @@ from rest_framework_simplejwt.tokens import AccessToken
 from rest_framework import filters, viewsets
 
 from api.filters import TitleFilter
+from api.mixins import CreateListDestroyViewSet
 
 from api_yamdb.api.utils import send_confirmation_mail
 from api_yamdb.api.permissions import IsAuthorOrReadOnly, IsAdmin
@@ -21,11 +23,13 @@ from api_yamdb.api.serializer import (ReviewSerializer,
                                       UserSerializer,
                                       CommentSerializer,
                                       TitleEditSerializer, 
-                                      TitleReadSerializer)
+                                      TitleReadSerializer,
+                                      CategorySerializer,
+                                      GenreSerializer,)
 from api_yamdb.reviews.models import Title
 
 from users.models import User
-from reviews.models import Title, Review
+from reviews.models import Title, Review, Category, Genre
 
 
 class ReviewViewSet(ModelViewSet):
@@ -72,14 +76,16 @@ class TitleViewSet(ModelViewSet):
     queryset = Title.objects.all().annotate(
         rating=Avg('reviews_review__score')
     )
+    pagination_class = LimitOffsetPagination
     # место для permission_classes
-    filter_backends = (filters.DjangoFilterBackend,)
+    filter_backends = (DjangoFilterBackend,)
     filterset_class = TitleFilter
 
     def get_serializer_class(self):
         if self.request.method in ['POST', 'PATCH']:
             return TitleEditSerializer
         return TitleReadSerializer
+
 
 class UserViewSet(viewsets.ModelViewSet):
     """Вьюсет пользователя."""
@@ -154,3 +160,22 @@ def token_view(request):
         status=HTTPStatus.BAD_REQUEST,
     )
 
+
+class CategoryViewSet(CreateListDestroyViewSet):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+    pagination_class = LimitOffsetPagination
+    # место для permission_classes
+    filter_backends = (filters.SearchFilter,)
+    search_fields = ('name',)
+    lookup_field = 'slug'
+
+
+class GenreViewSet(CreateListDestroyViewSet):
+    queryset = Genre.objects.all()
+    serializer_class = GenreSerializer
+    pagination_class = LimitOffsetPagination
+    # место для permission_classes
+    filter_backends = (filters.SearchFilter,)
+    search_fields = ('name',)
+    lookup_field = 'slug'
