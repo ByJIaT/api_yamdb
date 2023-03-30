@@ -1,13 +1,12 @@
 from django.contrib.auth import get_user_model
 from django.db import models
 
-
 from api_yamdb.settings import TEXT_LENGTH
 from reviews.validators import validate_actuality_year
 
 
 class Review(models.Model):
-    title_id = models.ForeignKey(
+    title = models.ForeignKey(
         'Title',
         on_delete=models.CASCADE,
         related_name='%(app_label)s_%(class)s',
@@ -30,8 +29,8 @@ class Review(models.Model):
         return self.text[:TEXT_LENGTH]
 
 
-class Comments(models.Model):
-    review_id = models.ForeignKey(
+class Comment(models.Model):
+    review = models.ForeignKey(
         'Review',
         on_delete=models.CASCADE,
         related_name='%(app_label)s_%(class)s',
