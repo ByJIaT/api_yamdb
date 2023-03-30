@@ -45,14 +45,20 @@ class CommentSerializer(serializers.ModelSerializer):
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
-        fields = '__all__'
+        fields = (
+            'name',
+            'slug',
+        )
         lookup_field = ('slug',)
 
 
 class GenreSerializer(serializers.ModelSerializer):
     class Meta:
         model = Genre
-        fields = '__all__'
+        fields = (
+            'name',
+            'slug',
+        )
         lookup_field = ('slug',)
 
 
@@ -63,7 +69,11 @@ class TitleReadSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Title
-        fields = '__all__'
+        fields = (
+            'id', 'name', 'year',
+            'genre', 'rating',
+            'category', 'description',
+        )
         read_only_fields = (
             'category',
             'genre',
@@ -84,7 +94,10 @@ class TitleEditSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Title
-        fields = '__all__'
+        fields = (
+            'id', 'name', 'year',
+            'genre', 'category', 'description',
+        )
 
 
 class UserSerializer(serializers.ModelSerializer):
