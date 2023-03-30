@@ -1,7 +1,7 @@
 from django.urls import path, include
 from rest_framework.routers import SimpleRouter
 
-from api_yamdb.api.views import ReviewViewSet, UserViewSet, TitleViewSet, signup_view, token_view
+from api_yamdb.api.views import CommentViewSet, ReviewViewSet, UserViewSet, TitleViewSet, signup_view, token_view
 
 router_v1 = SimpleRouter()
 router_v1.register(
@@ -12,7 +12,12 @@ router_v1.register(
 router_v1.register(
     r'titles/(?P<title_id>\d+)/reviews/',
     ReviewViewSet,
-    basename='api_yamdb_reviews',
+    basename='reviews',
+)
+router_v1.register(
+    r'titles/(?P<title_id>\d+)/reviews/(?P<review_id>\d+)/comments',
+    CommentViewSet,
+    basename='comments',
 )
 
 router_v1.register(

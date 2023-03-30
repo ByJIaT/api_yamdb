@@ -5,32 +5,45 @@ from api_yamdb import settings
 from users.models import User
 
 from api.validators import RangeValueValidator
-from reviews.models import Category, Genre, Review, Title
+from reviews.models import Category, Genre, Review, Title, Comment
 
 
 class ReviewSerializer(serializers.ModelSerializer):
+    author = serializers.StringRelatedField(many=True)
+
     class Meta:
         model = Review
-        fields = '__all__'
+        fields = ('id', 'text', 'author', 'score', 'pub_date')
         read_only_fields = (
-            'title_id',
+            'title',
             'author',
             'pub_date',
         )
         validators = [
             UniqueTogetherValidator(
                 queryset=Review.objects.all(),
-                fields=['title_id', 'author']
+                fields=['title', 'author']
             ),
             RangeValueValidator(
                 field='score',
             ),
-
         ]
 
 
-class CategorySerializer(serializers.ModelSerializer):
+class CommentSerializer(serializers.ModelSerializer):
+    author = serializers.StringRelatedField(many=True)
 
+    class Meta:
+        model = Comment
+        fields = ('id', 'text', 'author', 'pub_date')
+        read_only_fields = (
+            'review',
+            'author',
+            'pub_date',
+        )
+
+
+class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         fields = '__all__'
@@ -38,7 +51,6 @@ class CategorySerializer(serializers.ModelSerializer):
 
 
 class GenreSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Genre
         fields = '__all__'

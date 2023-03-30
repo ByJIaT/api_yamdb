@@ -12,17 +12,20 @@ from rest_framework_simplejwt.tokens import AccessToken
 from rest_framework import filters, viewsets
 
 from api.filters import TitleFilter
+
 from api_yamdb.api.utils import send_confirmation_mail
 from api_yamdb.api.permissions import IsAuthorOrReadOnly, IsAdmin
 from api_yamdb.api.serializer import (ReviewSerializer,
                                       GetCodeSerializer,
                                       GetTokenSerializer,
-                                      UserSerializer, 
+                                      UserSerializer,
+                                      CommentSerializer,
                                       TitleEditSerializer, 
                                       TitleReadSerializer)
 from api_yamdb.reviews.models import Title
 
 from users.models import User
+from reviews.models import Title, Review
 
 
 class ReviewViewSet(ModelViewSet):
@@ -36,16 +39,33 @@ class ReviewViewSet(ModelViewSet):
         return title
 
     def get_queryset(self):
-        return self.get_title().api_yamdb_reviews
+        return self.get_title().reviews_review
 
     def perform_create(self, serializer):
-        serializer.save(title_id=self.get_title(), author=self.request.user)
+        serializer.save(title=self.get_title(), author=self.request.user)
 
     def perform_update(self, serializer):
-        serializer.save(title_id=self.get_title(), author=self.request.user)
+        serializer.save(title=self.get_title(), author=self.request.user)
 
-    def perform_destroy(self, instance):
-        instance.delete(title_id=self.get_title(), author=self.request.user)
+
+class CommentViewSet(ModelViewSet):
+    serializer_class = CommentSerializer
+    pagination_class = LimitOffsetPagination
+    permission_classes = (IsAuthorOrReadOnly,)
+
+    def get_review(self):
+        pk = self.kwargs.get('review_id')
+        review = get_object_or_404(Review, pk=pk)
+        return review
+
+    def get_queryset(self):
+        return self.get_review().reviews_comment
+
+    def perform_create(self, serializer):
+        serializer.save(review=self.get_review(), author=self.request.user)
+
+    def perform_update(self, serializer):
+        serializer.save(review=self.get_review(), author=self.request.user)
 
 
 class TitleViewSet(ModelViewSet):
