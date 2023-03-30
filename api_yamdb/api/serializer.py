@@ -1,11 +1,10 @@
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator, UniqueTogetherValidator
 
-from api_yamdb import settings
-from users.models import User
-
 from api.validators import RangeValueValidator
+from api_yamdb import settings
 from reviews.models import Category, Genre, Review, Title, Comment
+from users.models import User
 
 
 class ReviewSerializer(serializers.ModelSerializer):
@@ -88,9 +87,7 @@ class TitleEditSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-
 class UserSerializer(serializers.ModelSerializer):
-
     email = serializers.EmailField(
         validators=[
             UniqueValidator(queryset=User.objects.all()),
@@ -143,15 +140,16 @@ class GetCodeSerializer(serializers.Serializer):
 
         if data.get('email') and data.get('username'):
             if (
-                User.objects.filter(email=data['email']).exists()
-                and not User.objects.filter(username=data['username']).exists()
+                    User.objects.filter(email=data['email']).exists()
+                    and not User.objects.filter(
+                username=data['username']).exists()
             ):
                 raise serializers.ValidationError(
                     'Недопустимая комбинация username и email.'
                 )
             if User.objects.filter(username=data["username"]).exists() and (
-                User.objects.get(
-                    username=data['username']).email != data['email']
+                    User.objects.get(
+                        username=data['username']).email != data['email']
             ):
                 raise serializers.ValidationError(
                     'Email не соответсвует пользователю.')
@@ -166,4 +164,3 @@ class GetCodeSerializer(serializers.Serializer):
 class GetTokenSerializer(serializers.Serializer):
     username = serializers.CharField(required=True, max_length=150)
     confirmation_code = serializers.CharField(required=True, max_length=254)
-

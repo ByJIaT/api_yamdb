@@ -1,35 +1,31 @@
-from django.db.models.aggregates import Avg
-from django_filters import rest_framework as filters
 from http import HTTPStatus
 
+from django.db.models.aggregates import Avg
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import filters, viewsets
+from rest_framework.decorators import action, api_view, permission_classes
 from rest_framework.generics import get_object_or_404
 from rest_framework.pagination import LimitOffsetPagination
-from rest_framework.viewsets import ModelViewSet
-from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
-from rest_framework.decorators import action, api_view, permission_classes
+from rest_framework.response import Response
+from rest_framework.viewsets import ModelViewSet
 from rest_framework_simplejwt.tokens import AccessToken
-from rest_framework import filters, viewsets
 
 from api.filters import TitleFilter
 from api.mixins import CreateListDestroyViewSet
-
-from api_yamdb.api.utils import send_confirmation_mail
-from api_yamdb.api.permissions import IsAuthorOrReadOnly, IsAdmin
-from api_yamdb.api.serializer import (ReviewSerializer,
-                                      GetCodeSerializer,
-                                      GetTokenSerializer,
-                                      UserSerializer,
-                                      CommentSerializer,
-                                      TitleEditSerializer, 
-                                      TitleReadSerializer,
-                                      CategorySerializer,
-                                      GenreSerializer,)
-from api_yamdb.reviews.models import Title
-
-from users.models import User
+from api.permissions import IsAuthorOrReadOnly, IsAdmin
+from api.serializer import (ReviewSerializer,
+                            GetCodeSerializer,
+                            GetTokenSerializer,
+                            UserSerializer,
+                            CommentSerializer,
+                            TitleEditSerializer,
+                            TitleReadSerializer,
+                            CategorySerializer,
+                            GenreSerializer, )
+from api.utils import send_confirmation_mail
 from reviews.models import Title, Review, Category, Genre
+from users.models import User
 
 
 class ReviewViewSet(ModelViewSet):

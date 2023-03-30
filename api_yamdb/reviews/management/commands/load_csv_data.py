@@ -9,13 +9,13 @@ from reviews.models import Category, Comment, Genre, GenreTitle, Review, Title
 User = get_user_model()
 
 DATASET = {
-    User: 'users.csv',
-    Review: 'review.csv',
-    Comment: 'comments.csv',
-    Category: 'category.csv',
-    Genre: 'genre.csv',
+    # User: 'users.csv',
+    # Category: 'category.csv',
+    # Genre: 'genre.csv',
     Title: 'titles.csv',
     GenreTitle: 'genre_title.csv',
+    Review: 'review.csv',
+    Comment: 'comments.csv',
 }
 
 
@@ -32,7 +32,6 @@ class Command(BaseCommand):
                     model.objects.bulk_create(
                         model(**data) for data in reader
                     )
-                    f.close()
             self.stdout.write('Данные успешно загружены')
         except Exception as error:
             self.stdout.write(

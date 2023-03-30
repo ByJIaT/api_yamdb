@@ -26,12 +26,12 @@ INSTALLED_APPS = [
 
     'rest_framework',
     'django_filters',
+    'rest_framework.authtoken',
+    'rest_framework_simplejwt',
+
     'users',
     'reviews',
     'api',
-    'django_filters',
-    'rest_framework.authtoken',
-    'rest_framework_simplejwt',
 ]
 
 MIDDLEWARE = [
@@ -138,7 +138,5 @@ SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
     'AUTH_HEADER_TYPES': ('Bearer',),
 }
-
-DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
 ALLOWED_USERNAME_RE = r"^[\w.@+-]+\Z"
