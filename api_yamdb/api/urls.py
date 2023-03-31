@@ -15,12 +15,12 @@ from api.views import (
 
 router_v1 = SimpleRouter()
 router_v1.register(
-    'titles',
+    r'titles',
     TitleViewSet,
     basename='titles',
 )
 router_v1.register(
-    r'titles/(?P<title_id>\d+)/reviews/',
+    r'titles/(?P<title_id>\d+)/reviews',
     ReviewViewSet,
     basename='reviews',
 )
@@ -30,18 +30,18 @@ router_v1.register(
     basename='comments',
 )
 router_v1.register(
-    'categories',
+    r'categories',
     CategoryViewSet,
     basename='сategories',
 )
 router_v1.register(
-    'genres',
+    r'genres',
     GenreViewSet,
     basename='genres',
 )
 
 router_v1.register(
-    'users',
+    r'users',
     UserViewSet,
     basename='users'
 )
@@ -49,5 +49,5 @@ router_v1.register(
 urlpatterns = [
     path('v1/auth/signup/', signup_view, name='signup'),
     path('v1/auth/token/', token_view, name='token'),
-    path('v1/', include(router_v1.urls))
+    path('v1/', include(router_v1.urls)),
 ]

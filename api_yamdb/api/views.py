@@ -1,5 +1,6 @@
 from http import HTTPStatus
 
+from django.contrib.auth import get_user_model
 from django.db.models.aggregates import Avg
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, viewsets
@@ -13,25 +14,32 @@ from rest_framework_simplejwt.tokens import AccessToken
 
 from api.filters import TitleFilter
 from api.mixins import CreateListDestroyViewSet
-from api.permissions import IsAdminOrReadOnly, IsAuthorOrReadOnly, IsAdmin
-from api.serializer import (ReviewSerializer,
-                            GetCodeSerializer,
-                            GetTokenSerializer,
-                            UserSerializer,
-                            CommentSerializer,
-                            TitleEditSerializer,
-                            TitleReadSerializer,
-                            CategorySerializer,
-                            GenreSerializer, )
+from api.permissions import (
+    IsAuthorAdminModeratorOrReadOnly,
+    IsAdmin,
+    IsAdminOrReadOnly,
+)
+from api.serializer import (
+    ReviewSerializer,
+    GetCodeSerializer,
+    GetTokenSerializer,
+    UserSerializer,
+    CommentSerializer,
+    TitleEditSerializer,
+    TitleReadSerializer,
+    CategorySerializer,
+    GenreSerializer,
+)
 from api.utils import send_confirmation_mail
 from reviews.models import Title, Review, Category, Genre
-from users.models import User
+
+User = get_user_model()
 
 
 class ReviewViewSet(ModelViewSet):
     serializer_class = ReviewSerializer
     pagination_class = PageNumberPagination
-    permission_classes = (IsAuthorOrReadOnly,)
+    permission_classes = (IsAuthorAdminModeratorOrReadOnly,)
 
     def get_title(self):
         pk = self.kwargs.get('title_id')
@@ -39,19 +47,16 @@ class ReviewViewSet(ModelViewSet):
         return title
 
     def get_queryset(self):
-        return self.get_title().reviews_review
+        return self.get_title().reviews_review.all()
 
     def perform_create(self, serializer):
-        serializer.save(title=self.get_title(), author=self.request.user)
-
-    def perform_update(self, serializer):
         serializer.save(title=self.get_title(), author=self.request.user)
 
 
 class CommentViewSet(ModelViewSet):
     serializer_class = CommentSerializer
     pagination_class = PageNumberPagination
-    permission_classes = (IsAuthorOrReadOnly,)
+    permission_classes = (IsAuthorAdminModeratorOrReadOnly,)
 
     def get_review(self):
         pk = self.kwargs.get('review_id')
@@ -59,12 +64,9 @@ class CommentViewSet(ModelViewSet):
         return review
 
     def get_queryset(self):
-        return self.get_review().reviews_comment
+        return self.get_review().reviews_comment.all()
 
     def perform_create(self, serializer):
-        serializer.save(review=self.get_review(), author=self.request.user)
-
-    def perform_update(self, serializer):
         serializer.save(review=self.get_review(), author=self.request.user)
 
 

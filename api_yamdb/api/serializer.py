@@ -1,43 +1,58 @@
+from django.contrib.auth import get_user_model
 from rest_framework import serializers
-from rest_framework.validators import UniqueValidator, UniqueTogetherValidator
+from rest_framework.validators import UniqueValidator
 
-from api.validators import RangeValueValidator
 from api_yamdb import settings
 from reviews.models import Category, Genre, Review, Title, Comment
-from users.models import User
+
+User = get_user_model()
 
 
 class ReviewSerializer(serializers.ModelSerializer):
-    author = serializers.StringRelatedField(many=True)
+    author = serializers.SlugRelatedField(
+        many=False,
+        read_only=True,
+        slug_field='username'
+    )
 
     class Meta:
         model = Review
         fields = ('id', 'text', 'author', 'score', 'pub_date')
         read_only_fields = (
             'title',
-            'author',
             'pub_date',
         )
-        validators = [
-            UniqueTogetherValidator(
-                queryset=Review.objects.all(),
-                fields=['title', 'author']
-            ),
-            RangeValueValidator(
-                field='score',
-            ),
-        ]
+
+    def validate_score(self, score):
+        if not 1 <= score <= 10:
+            raise serializers.ValidationError('Оценка в диапазоне от 1 до 10')
+        return score
+
+    def validate(self, attrs):
+        request = self.context.get('request')
+        title_id = self.context.get('view').kwargs.get('title_id')
+        if (
+                request.method == 'POST'
+                and Review.objects.filter(author=request.user,
+                                          title=title_id).exists()
+        ):
+            raise serializers.ValidationError('Вы уже оставляли отзыв')
+
+        return attrs
 
 
 class CommentSerializer(serializers.ModelSerializer):
-    author = serializers.StringRelatedField(many=True)
+    author = serializers.SlugRelatedField(
+        many=False,
+        read_only=True,
+        slug_field='username'
+    )
 
     class Meta:
         model = Comment
         fields = ('id', 'text', 'author', 'pub_date')
         read_only_fields = (
             'review',
-            'author',
             'pub_date',
         )
 
@@ -154,8 +169,8 @@ class GetCodeSerializer(serializers.Serializer):
         if data.get('email') and data.get('username'):
             if (
                     User.objects.filter(email=data['email']).exists()
-                    and not User.objects.filter(
-                username=data['username']).exists()
+                    and not User.objects.filter(username=data['username']
+                                                ).exists()
             ):
                 raise serializers.ValidationError(
                     'Недопустимая комбинация username и email.'
