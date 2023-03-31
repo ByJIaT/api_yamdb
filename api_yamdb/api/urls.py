@@ -17,7 +17,7 @@ router_v1 = SimpleRouter()
 router_v1.register(
     'titles',
     TitleViewSet,
-    basename='api_yamdb_titles',
+    basename='titles',
 )
 router_v1.register(
     r'titles/(?P<title_id>\d+)/reviews/',
@@ -32,18 +32,18 @@ router_v1.register(
 router_v1.register(
     'categories',
     CategoryViewSet,
-    basename='api_yamdb_сategories',
+    basename='сategories',
 )
 router_v1.register(
     'genres',
     GenreViewSet,
-    basename='api_yamdb_genres',
+    basename='genres',
 )
 
 router_v1.register(
     'users',
     UserViewSet,
-    basename='api_yamdb_users'
+    basename='users'
 )
 
 urlpatterns = [

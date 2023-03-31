@@ -9,9 +9,9 @@ from reviews.models import Category, Comment, Genre, GenreTitle, Review, Title
 User = get_user_model()
 
 DATASET = {
-    # User: 'users.csv',
-    # Category: 'category.csv',
-    # Genre: 'genre.csv',
+    User: 'users.csv',
+    Category: 'category.csv',
+    Genre: 'genre.csv',
     Title: 'titles.csv',
     GenreTitle: 'genre_title.csv',
     Review: 'review.csv',
