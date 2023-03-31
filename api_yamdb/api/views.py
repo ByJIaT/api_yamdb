@@ -31,7 +31,7 @@ from api.serializer import (
     GenreSerializer,
 )
 from api.utils import send_confirmation_mail
-from reviews.models import Title, Review, Category, Genre
+from reviews.models import Title, Review, Category, Genre, Comment
 
 User = get_user_model()
 
@@ -63,8 +63,16 @@ class CommentViewSet(ModelViewSet):
         review = get_object_or_404(Review, pk=pk)
         return review
 
+    def get_title(self):
+        pk = self.kwargs.get('title_id')
+        title = get_object_or_404(Title, pk=pk)
+        return title
+
     def get_queryset(self):
-        return self.get_review().reviews_comment.all()
+        return Comment.objects.filter(
+            review__title=self.get_title(),
+            review=self.get_review()
+        ).select_related('author', 'review')
 
     def perform_create(self, serializer):
         serializer.save(review=self.get_review(), author=self.request.user)
