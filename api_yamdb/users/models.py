@@ -27,12 +27,15 @@ class User(AbstractUser):
         default=USER_ROLE,
     )
 
-    class Meta:
+    class Meta(AbstractUser.Meta):
         constraints = [
             models.UniqueConstraint(
                 fields=['email', 'username'],
                 name='Только один пользователь на email.'
             )
+        ]
+        indexes = [
+            models.Index(fields=('username',)),
         ]
 
     @property

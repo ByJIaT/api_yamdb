@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
 from api_yamdb.settings import TEXT_LENGTH
@@ -17,7 +18,13 @@ class Review(models.Model):
         related_name='%(app_label)s_%(class)s',
     )
     text = models.TextField('Отзыв')
-    score = models.IntegerField('Оценка')
+    score = models.IntegerField(
+        'Оценка',
+        validators=[
+            MinValueValidator(1, 'Оценка не может быть меньше 1'),
+            MaxValueValidator(10, 'Оценка не может быть выше 10'),
+        ]
+    )
     pub_date = models.DateTimeField('Дата публикации', auto_now_add=True)
 
     class Meta:
@@ -29,6 +36,10 @@ class Review(models.Model):
                 fields=('title', 'author',),
                 name='unique_title_author',
             ),
+        ]
+        indexes = [
+            models.Index(fields=('-pub_date',)),
+            models.Index(fields=('author',)),
         ]
 
     def __str__(self):
@@ -53,6 +64,11 @@ class Comment(models.Model):
         verbose_name = 'Комментарий'
         verbose_name_plural = 'Комментарии'
         ordering = ('-pub_date',)
+        indexes = [
+            models.Index(fields=('-pub_date',)),
+            models.Index(fields=('review',)),
+            models.Index(fields=('author',)),
+        ]
 
     def __str__(self):
         return self.text[:TEXT_LENGTH]
@@ -73,6 +89,11 @@ class Category(models.Model):
         ordering = ('id',)
         verbose_name = 'Категория'
         verbose_name_plural = 'Категории'
+        indexes = [
+            models.Index(fields=('id',)),
+            models.Index(fields=('name',)),
+            models.Index(fields=('slug',)),
+        ]
 
     def __str__(self):
         return self.name[:TEXT_LENGTH]
@@ -93,6 +114,11 @@ class Genre(models.Model):
         ordering = ('id',)
         verbose_name = 'Жанр'
         verbose_name_plural = 'Жанры'
+        indexes = [
+            models.Index(fields=('id',)),
+            models.Index(fields=('name',)),
+            models.Index(fields=('slug',)),
+        ]
 
     def __str__(self):
         return self.name[:TEXT_LENGTH]
@@ -129,6 +155,11 @@ class Title(models.Model):
     class Meta:
         verbose_name = 'Произведение'
         verbose_name_plural = 'Произведения'
+        indexes = [
+            models.Index(fields=('category',)),
+            models.Index(fields=('name',)),
+            models.Index(fields=('year',)),
+        ]
 
     def __str__(self):
         return self.name[:TEXT_LENGTH]
