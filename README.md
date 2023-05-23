@@ -177,7 +177,7 @@ cd api_yamdb
 Создать и активировать виртуальное окружение:
 
 ```bash
-python3 - m venv env
+python3 -m venv env
 ```
 
 ```bash
@@ -187,11 +187,11 @@ source env/bin/activate
 Установить зависимости из файла requirements.txt:
 
 ```bash
-python3 - m pip install - -upgrade pip
+python3 -m pip install -upgrade pip
 ```
 
 ```bash
-pip install - r requirements.txt
+pip install -r requirements.txt
 ```
 
 Выполнить миграции:
